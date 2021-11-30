@@ -1,7 +1,7 @@
 import { shipFactory } from './factories/ship.js';
 
-console.log('click');
-
 let thisGuy = shipFactory(5);
-
-console.log(thisGuy.getHealth());
+thisGuy.hit(2);
+thisGuy.hit(1);
+console.log(thisGuy.sunk());
+console.log(thisGuy.health);
