@@ -13,7 +13,7 @@
   "name": "battleship",
   "description": "",
   "version": "1.0.0",
-  "main": "script.js",
+  "private": true,
   "dependencies": {
     "abab": "^2.0.5",
     "acorn": "^8.6.0",
