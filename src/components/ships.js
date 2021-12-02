@@ -1,4 +1,4 @@
-const ships = [
+export const ships = [
   {
     name: 'destroyer',
     length: 2,
@@ -20,5 +20,3 @@ const ships = [
     length: 5,
   },
 ];
-
-export { ships };
