@@ -32,12 +32,20 @@ function gameBoard() {
     board[coordinate].shotTaken = true;
   };
 
+  const allShipsSunk = () => {
+    let allShips = board.filter((square) => square.hasShip === true);
+    if (allShips.every((ship) => ship.shotTaken === true)) {
+      return true;
+    }
+  };
+
   return {
     loadBoard,
     placeShip,
     vertical,
     receiveAttack,
     board,
+    allShipsSunk,
   };
 }
 

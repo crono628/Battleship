@@ -107,3 +107,27 @@ test('take shots and miss a placed ship', () => {
   expect(newBoard.board[28].shotTaken).toBe(true);
   expect(newBoard.board[29].shotTaken).toBe(true);
 });
+
+test('all ships sunk', () => {
+  const newCarrier = shipFactory(ships[4]);
+  const newBoard = gameBoard();
+  newBoard.placeShip(15, newCarrier);
+  newBoard.receiveAttack(15);
+  newBoard.receiveAttack(16);
+  newBoard.receiveAttack(17);
+  newBoard.receiveAttack(18);
+  newBoard.receiveAttack(19);
+  newCarrier.hit(0);
+  newCarrier.hit(1);
+  newCarrier.hit(2);
+  newCarrier.hit(3);
+  newCarrier.hit(4);
+  expect(newBoard.board[15].hasShip).toBe(true);
+  expect(newBoard.board[16].hasShip).toBe(true);
+  expect(newBoard.board[17].hasShip).toBe(true);
+  expect(newBoard.board[18].hasShip).toBe(true);
+  expect(newBoard.board[19].hasShip).toBe(true);
+  expect(newBoard.board[16].shotTaken).toBe(true);
+  expect(newCarrier.sunk()).toBe(true);
+  expect(newBoard.allShipsSunk()).toBe(true);
+});
