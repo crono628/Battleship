@@ -1,22 +1,22 @@
 const height = 10;
 
 function gameBoard() {
-  let board = [];
+  const board = [];
   let horizontal = true;
 
-  const vertical = () => {
+  function vertical() {
     horizontal = !horizontal;
-  };
+  }
 
-  const loadBoard = () => {
+  function loadBoard() {
     for (let i = 0; i < height * height; i++) {
       board.push({ hasShip: false, shipType: null, shotTaken: false, id: i });
     }
-  };
+  }
 
   board.length === 0 ? loadBoard() : [];
 
-  const placeShip = (coordinate, ship) => {
+  function placeShip(coordinate, ship) {
     for (let i = 0; i < ship.length; i++) {
       if (horizontal) {
         board[coordinate + i].hasShip = true;
@@ -26,18 +26,18 @@ function gameBoard() {
         board[coordinate + i * height].shipType = `${ship.name}`;
       }
     }
-  };
+  }
 
-  const receiveAttack = (coordinate) => {
+  function receiveAttack(coordinate) {
     board[coordinate].shotTaken = true;
-  };
+  }
 
-  const allShipsSunk = () => {
+  function allShipsSunk() {
     let allShips = board.filter((square) => square.hasShip === true);
     if (allShips.every((ship) => ship.shotTaken === true)) {
       return true;
     }
-  };
+  }
 
   return {
     loadBoard,

@@ -1,6 +1,5 @@
 import { playerFactory } from '../player-factory.js';
 import { findShip } from '../../helpers/find-ship.js';
-import _, { reduce } from 'lodash';
 
 test('player has 5 ships', () => {
   const playerOne = playerFactory('human');
@@ -10,12 +9,9 @@ test('player has 5 ships', () => {
 test('cpu has 5 ships placed randomly', () => {
   const cpuPlayer = playerFactory();
 
-  const boardFilter = reduce(cpuPlayer.playerShips(), function (result, value) )
-
-
-  console.log('ships: ' + Object.keys(boardFilter));
-
-  expect(cpuPlayer.playerShips.length).toBe(5);
+  expect(cpuPlayer.playerBoard.board.map((item) => item.hasShip).length).toBe(
+    100
+  );
 });
 
 test('ship placed horizontal, is attacked, shows attack in players ship array', () => {

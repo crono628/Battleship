@@ -1,7 +1,6 @@
 import { gameBoard } from './gameboard-factory.js';
 import { shipFactory } from './ship-factory.js';
 import { ships } from '../components/ships.js';
-import _, { iteratee, random } from 'lodash';
 
 let playerOneTurn = true;
 
@@ -27,16 +26,25 @@ function playerFactory(human) {
       playerShips.push(newShip);
     });
 
-    if (playerShips.length == 5) {
+    function shipsOntoBoard() {
       playerShips.forEach((ship) => {
-        playerBoard.placeShip(random(99), iteratee('hasShip', false));
+        let findSpot = playerBoard.board.filter(
+          (item) => item.hasShip === false
+        );
+        let goodSpot = findSpot[Math.floor(Math.random() * findSpot.length)];
+        console.log(findSpot);
+        console.log(goodSpot);
+
+        return playerBoard.placeShip(parseInt(goodSpot), ship);
       });
     }
 
-    const attack = (someone, somewhere) => {
+    playerShips.length === 5 ? shipsOntoBoard() : [];
+
+    function attack(someone, somewhere) {
       someone.playerBoard.receiveAttack(somewhere);
-    };
-    return { playerBoard, playerShips, attack };
+    }
+    return { playerBoard, playerShips, attack, shipsOntoBoard };
   }
 }
 
