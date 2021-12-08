@@ -17,4 +17,8 @@ import { playerFactory } from './factories/player-factory.js';
 // const boardFilter = cpuPlayer.playerBoard.board.filter(
 //   (ship) => ship.hasShip === true
 // );
+
+// console.log(
+//   cpuPlayer.edgeCheck(ships[4], [9, 19, 29, 39, 49, 59, 69, 79, 89, 99], 51)
+// );
 // console.log('ships: ' + boardFilter);
