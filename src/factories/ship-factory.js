@@ -1,14 +1,14 @@
 function shipFactory(ship) {
   const getName = () => ship.name;
   const name = getName();
-  const health = Array(ship.length).fill(null);
-  const getHealth = () => health;
-  const length = getHealth().length;
-  const hit = (index) => health.splice(index, 1, 'x');
+  const healthArray = Array(ship.length).fill({ hitIndex: null });
+  const getHealth = () => healthArray;
+  const hit = (index, coordinate) =>
+    healthArray.splice(index, 1, { hitIndex: parseInt(`${coordinate}`) });
   const sunk = () => {
-    return health.every((space) => space === 'x');
+    return healthArray.every((space) => space.hitIndex !== null);
   };
-  return { hit, sunk, getHealth, length, name };
+  return { hit, sunk, getHealth, name };
 }
 
 export { shipFactory };
