@@ -1,36 +1,37 @@
+import { shipFactory } from './ship-factory.js';
+import ships from '../components/ships.js';
 const height = 10;
 
 function gameBoard() {
-  let board = [];
-  let shipPlacement = [];
+  const board = [];
+  const getBoard = () => board;
+  const fleetCoordinates = [];
+  const getFleetCoordinates = () => fleetCoordinates;
   let horizontal = true;
-
   const vertical = () => {
     horizontal = !horizontal;
   };
 
   const loadBoard = () => {
     for (let i = 0; i < height * height; i++) {
-      board.push({ hasShip: false, shipType: null, shotTaken: false, id: i });
+      board.push({ hasShip: false, shotTaken: false, id: i });
     }
   };
 
   board.length === 0 ? loadBoard() : [];
 
   const placeShip = (coordinate, boat) => {
-    let thisArr = [];
+    let shipArray = [];
     for (let i = 0; i < boat.length; i++) {
       if (horizontal) {
         board[coordinate + i].hasShip = true;
-        board[coordinate + i].shipType = `${ship.name}`;
-        thisArr.push(coordinate + i);
+        shipArray.push(coordinate + i);
       } else {
         board[coordinate + i * height].hasShip = true;
-        board[coordinate + i * height].shipType = `${ship.name}`;
-        thisArr.push(coordinate + i * height);
+        shipArray.push(coordinate + i * height);
       }
     }
-    return shipPlacement.push(thisArr);
+    fleetCoordinates.push(shipArray);
   };
 
   const receiveAttack = (coordinate) => {
@@ -49,8 +50,8 @@ function gameBoard() {
     placeShip,
     vertical,
     receiveAttack,
-    board,
-    shipPlacement,
+    getBoard,
+    getFleetCoordinates,
     allShipsSunk,
   };
 }

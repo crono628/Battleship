@@ -6,59 +6,65 @@ let playerOneTurn = true;
 
 function playerFactory(human) {
   if (human) {
-    const playerBoard = gameBoard();
-    const playerShips = [];
-
-    ships.forEach((ship) => {
-      let newShip = shipFactory(ship);
-      playerShips.push(newShip);
-    });
-
-    const attack = (someone, somewhere) => {
-      someone.playerBoard.receiveAttack(somewhere);
-    };
-    return { playerBoard, playerShips, attack };
-  } else {
-    // this is the cpu controller
-    const playerBoard = gameBoard();
-    const playerShips = [];
-    ships.forEach((ship) => {
-      let newShip = shipFactory(ship);
-      playerShips.push(newShip);
-    });
-
-    const shipsOntoBoard = () => {
-      const edges = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
-
-      playerShips.forEach((ship) => {
-        let findSpot = playerBoard.board.filter(
-          (spot) => spot.hasShip === false
-        );
-        let goodSpot = findSpot[Math.floor(Math.random() * findSpot.length)];
-        if (edgeCheck(ship, edges, 54)) {
-          playerBoard.placeShip(goodSpot.id, ship);
-        }
-      });
-    };
-
-    playerShips.length === 5 && playerBoard.board.length === 100
-      ? shipsOntoBoard()
-      : [];
-
-    function edgeCheck(boat, arr, coordinate) {
-      const range = { min: boat.length, max: coordinate + boat.length };
-
-      let result = arr.some(function (num) {
-        return num >= this.min && num <= this.max;
-      }, range);
-
-      return result;
-    }
+    const {
+      loadBoard,
+      placeShip,
+      vertical,
+      receiveAttack,
+      getBoard,
+      getFleetCoordinates,
+      allShipsSunk,
+    } = gameBoard();
 
     const attack = (someone, somewhere) => {
-      someone.playerBoard.receiveAttack(somewhere);
+      someone.receiveAttack(somewhere);
     };
-    return { playerBoard, playerShips, attack, edgeCheck };
+    return {
+      attack,
+      loadBoard,
+      placeShip,
+      vertical,
+      receiveAttack,
+      getBoard,
+      getFleetCoordinates,
+      allShipsSunk,
+    };
+    // } else {
+    //   // this is the cpu controller
+    //   const playerBoard = gameBoard();
+    //   const playerShips = [];
+
+    //   const shipsOntoBoard = () => {
+    //     playerShips.forEach((ship) => {
+    //       const edges = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
+    //       const findSpots = playerBoard.board.filter(
+    //         (spot) => spot.hasShip === false
+    //       );
+
+    //       const taken = ship.directions[randomizer(ship.directions)].some(
+    //         (spot) => findSpots[randomizer(findSpots) + spot]
+    //       );
+    //       const overflow = ship.directions[randomizer(ship.directions)].some(
+    //         (spot) => edges[(spot, spot + 1)]
+    //       );
+    //       if (!taken && !overflow) {
+    //         playerBoard.placeShip(findSpots[randomizer(findSpots)], ship);
+    //       }
+    //     });
+    //   };
+
+    //   playerShips.length === 5 && playerBoard.board.length === 100
+    //     ? shipsOntoBoard()
+    //     : [];
+
+    //   function randomizer(arr) {
+    //     return Math.floor(Math.random() * arr.length);
+    //   }
+
+    //   const attack = (someone, somewhere) => {
+    //     someone.playerBoard.receiveAttack(somewhere);
+    //   };
+    //   return { playerBoard, playerShips, attack };
   }
 }
 

@@ -1,51 +1,35 @@
 import { shipFactory } from '../ship-factory.js';
 import { ships } from '../../components/ships.js';
 
-test('health is null array equal to ship length', () => {
-  let newShip = shipFactory(ships[4]);
-  expect(newShip.getHealth().length).toBe(5);
-  expect(newShip.getHealth()).toStrictEqual([
-    { hitIndex: null },
-    { hitIndex: null },
-    { hitIndex: null },
-    { hitIndex: null },
-    { hitIndex: null },
-  ]);
-});
-
-test('a hit will recorde the index and coordinate of the attack', () => {
-  let newShip = shipFactory(ships[4]);
-  newShip.hit(0, 50);
-  newShip.hit(3, 53);
-  expect(newShip.getHealth()).toEqual([
-    { hitIndex: 50 },
-    { hitIndex: null },
-    { hitIndex: null },
-    { hitIndex: 53 },
-    { hitIndex: null },
-  ]);
-});
-
-test('enough hits will sink the ship', () => {
-  let newShip = shipFactory(ships[4]);
-  newShip.hit(0);
-  newShip.hit(1);
-  newShip.hit(2);
-  newShip.hit(3);
-  newShip.hit(4);
+test('enough hits to sink', () => {
+  let newShip = shipFactory(ships.destroyer);
+  newShip.hit(0, 9);
+  newShip.hit(1, 10);
   expect(newShip.sunk()).toBe(true);
 });
 
-test('not enough hits will not sink the ship', () => {
-  let newShip = shipFactory(ships[4]);
-  newShip.hit(0);
-  newShip.hit(1);
-  newShip.hit(2);
-  newShip.hit(4);
+test('not enough hits to sink', () => {
+  let newShip = shipFactory(ships.destroyer);
+  newShip.hit(0, 15);
   expect(newShip.sunk()).toBe(false);
+  expect(newShip.showHealth()).toEqual([{ hitIndex: 15 }, { hitIndex: null }]);
 });
 
-test('the ship has a name', () => {
-  let newShip = shipFactory(ships[4]);
-  expect(newShip.name).toBe('carrier');
+test('ship has directions', () => {
+  let newShip = shipFactory(ships.battleship);
+  expect(newShip.getDirections()[0].length).toBe(4);
+  expect(newShip.getDirections()[1].length).toBe(4);
+  expect(newShip.getDirections()[1]).toEqual([0, 10, 20, 30]);
+  expect(newShip.getDirections().length).toBe(2);
+});
+
+test('ship has length, health', () => {
+  let newShip = shipFactory(ships.battleship);
+  expect(newShip.getLength()).toBe(4);
+  expect(newShip.showHealth()).toEqual([
+    { hitIndex: null },
+    { hitIndex: null },
+    { hitIndex: null },
+    { hitIndex: null },
+  ]);
 });
