@@ -1,31 +1,70 @@
 import { shipFactory } from '../factories/ship-factory.js';
 
 const gameBoard = () => {
-  const horizontal = true;
   const board = [];
   for (let i = 0; i < 100; i++) {
-    board.push({ hasShip: false, shotTaken: false, id: i });
+    board.push({ hasShip: false, shotTaken: false, shipType: null, id: i });
   }
   const fleet = [];
-  const fleetCoordinates = [];
-  const placeShip = (coordinate, ship) => {
+
+  let horizontal = true;
+  const toggleAxis = () => (horizontal = !horizontal);
+
+  const placeShip = (coordinate, boat) => {
     let shipArray = [];
-    for (let i = 0; i < ship.length; i++) {
+    for (let i = 0; i < boat.length; i++) {
       if (horizontal) {
         board[coordinate + i].hasShip = true;
+        board[coordinate + i].shipType = boat.name;
         shipArray.push(coordinate + i);
       } else {
         board[coordinate + i * 10].hasShip = true;
+        board[coordinate + i * 10].shipType = boat.name;
         shipArray.push(coordinate + i * 10);
       }
     }
-    fleetCoordinates.push([
-      { name: ship.name },
-      { location: shipArray },
-      shipFactory(ship),
-    ]);
+    fleet.push({
+      name: boat.name,
+      location: shipArray,
+      functions: shipFactory(boat)
+    });
   };
-  return { placeShip, board, fleetCoordinates, fleet };
+
+  const findFleetShip = (ship) => fleet.find(({ name }) => name === ship);
+  const findBoardLocation = (coordinate) =>
+    board.find(({ id }) => id === coordinate);
+
+  const missedShots = [];
+  const receiveAttack = (coordinate) => {
+    const here = board[coordinate];
+    here.shotTaken = true;
+    if (here.hasShip) {
+      const ship = findFleetShip(here.shipType);
+      ship.functions.hit(ship.location.indexOf(coordinate), coordinate);
+    }
+    if (!here.hasShip) {
+      missedShots.push(coordinate);
+    }
+  };
+
+  const allSunk = () => {
+    for (let ship of fleet) {
+      if (fleet.every((obj) => obj.functions.sunk())) {
+        return true;
+      } else return false;
+    }
+  };
+
+  return {
+    placeShip,
+    fleet,
+    findFleetShip,
+    findBoardLocation,
+    receiveAttack,
+    missedShots,
+    allSunk,
+    toggleAxis
+  };
 };
 
 export { gameBoard };
