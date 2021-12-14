@@ -1,12 +1,10 @@
 function shipFactory(ship) {
-  let health = Array(ship.length).fill({ hitIndex: null });
-  const getLength = () => health.length;
-  const showHealth = () => health;
-  const getDirections = () => ship.directions;
+  const health = new Array(ship.length).fill({ hitLoc: null });
   const hit = (index, coordinate) =>
-    health.splice(index, 1, { ...health[index], hitIndex: coordinate });
-  const sunk = () => health.every((spot) => spot.hitIndex !== null);
-  return { getLength, hit, sunk, showHealth, getDirections };
+    health.splice(index, 1, { ...health[index], hitLoc: coordinate });
+  const sunk = () => health.every((spot) => spot.hitLoc !== null);
+  const directions = () => ship.directions;
+  return { hit, sunk, directions };
 }
 
 export { shipFactory };

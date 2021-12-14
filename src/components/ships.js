@@ -1,5 +1,6 @@
 export const ships = {
   destroyer: {
+    name: 'destroyer',
     length: 2,
     directions: [
       [0, 1],
@@ -7,6 +8,7 @@ export const ships = {
     ],
   },
   submarine: {
+    name: 'submarine',
     length: 3,
     directions: [
       [0, 1, 2],
@@ -14,6 +16,7 @@ export const ships = {
     ],
   },
   cruiser: {
+    name: 'cruiser',
     length: 3,
     directions: [
       [0, 1, 2],
@@ -21,6 +24,7 @@ export const ships = {
     ],
   },
   battleship: {
+    name: 'battleship',
     length: 4,
     directions: [
       [0, 1, 2, 3],
@@ -28,6 +32,7 @@ export const ships = {
     ],
   },
   carrier: {
+    name: 'carrier',
     length: 5,
     directions: [
       [0, 1, 2, 3, 4],

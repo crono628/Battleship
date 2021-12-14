@@ -1,59 +1,31 @@
-import { shipFactory } from './ship-factory.js';
-import ships from '../components/ships.js';
-const height = 10;
+import { shipFactory } from '../factories/ship-factory.js';
 
-function gameBoard() {
+const gameBoard = () => {
+  const horizontal = true;
   const board = [];
-  const getBoard = () => board;
+  for (let i = 0; i < 100; i++) {
+    board.push({ hasShip: false, shotTaken: false, id: i });
+  }
+  const fleet = [];
   const fleetCoordinates = [];
-  const getFleetCoordinates = () => fleetCoordinates;
-  let horizontal = true;
-  const vertical = () => {
-    horizontal = !horizontal;
-  };
-
-  const loadBoard = () => {
-    for (let i = 0; i < height * height; i++) {
-      board.push({ hasShip: false, shotTaken: false, id: i });
-    }
-  };
-
-  board.length === 0 ? loadBoard() : [];
-
-  const placeShip = (coordinate, boat) => {
+  const placeShip = (coordinate, ship) => {
     let shipArray = [];
-    for (let i = 0; i < boat.length; i++) {
+    for (let i = 0; i < ship.length; i++) {
       if (horizontal) {
         board[coordinate + i].hasShip = true;
         shipArray.push(coordinate + i);
       } else {
-        board[coordinate + i * height].hasShip = true;
-        shipArray.push(coordinate + i * height);
+        board[coordinate + i * 10].hasShip = true;
+        shipArray.push(coordinate + i * 10);
       }
     }
-    fleetCoordinates.push(shipArray);
+    fleetCoordinates.push([
+      { name: ship.name },
+      { location: shipArray },
+      shipFactory(ship),
+    ]);
   };
-
-  const receiveAttack = (coordinate) => {
-    board[coordinate].shotTaken = true;
-  };
-
-  const allShipsSunk = () => {
-    let allShips = board.filter((square) => square.hasShip === true);
-    if (allShips.every((ship) => ship.shotTaken === true)) {
-      return true;
-    }
-  };
-
-  return {
-    loadBoard,
-    placeShip,
-    vertical,
-    receiveAttack,
-    getBoard,
-    getFleetCoordinates,
-    allShipsSunk,
-  };
-}
+  return { placeShip, board, fleetCoordinates, fleet };
+};
 
 export { gameBoard };
