@@ -12,13 +12,11 @@ test('place carrier horizontal', () => {
   expect(newBoard.board[17].hasShip).toBe(true);
   expect(newBoard.board[18].hasShip).toBe(true);
   expect(newBoard.board[19].hasShip).toBe(true);
-  console.log(newBoard.fleetCoordinates);
-  console.log(newBoard.fleet);
 });
 
-test.skip('place carrier vertical', () => {
+test('place carrier toggleAxis', () => {
   const newBoard = gameBoard();
-  newBoard.vertical();
+  newBoard.toggleAxis();
   newBoard.placeShip(5, ships.carrier);
   expect(newBoard.board[5].hasShip).toBe(true);
   expect(newBoard.board[15].hasShip).toBe(true);
@@ -27,13 +25,13 @@ test.skip('place carrier vertical', () => {
   expect(newBoard.board[45].hasShip).toBe(true);
 });
 
-test.skip('receive attack', () => {
+test('receive attack', () => {
   const newBoard = gameBoard();
   newBoard.receiveAttack(5);
   expect(newBoard.board[5].shotTaken).toBe(true);
 });
 
-test.skip('place carrier horizontal and take a hit', () => {
+test('place carrier horizontal and take a hit', () => {
   const newBoard = gameBoard();
 
   newBoard.placeShip(15, ships.carrier);
@@ -46,10 +44,10 @@ test.skip('place carrier horizontal and take a hit', () => {
   expect(newBoard.board[16].shotTaken).toBe(true);
 });
 
-test.skip('place carrier vertical, take a hit and not sink', () => {
+test('place carrier vertical, take a hit and not sink', () => {
   const newCarrier = shipFactory(ships.carrier);
   const newBoard = gameBoard();
-  newBoard.vertical();
+  newBoard.toggleAxis();
   newBoard.placeShip(5, ships.carrier);
   newBoard.receiveAttack(25);
   newCarrier.hit(2, 25);
@@ -62,7 +60,7 @@ test.skip('place carrier vertical, take a hit and not sink', () => {
   expect(newCarrier.sunk()).toBe(false);
 });
 
-test.skip('place carrier horizontal and get sunk', () => {
+test('place carrier horizontal and get sunk', () => {
   const newCarrier = shipFactory(ships.carrier);
   const newBoard = gameBoard();
   newBoard.placeShip(15, ships.carrier);
@@ -85,7 +83,7 @@ test.skip('place carrier horizontal and get sunk', () => {
   expect(newCarrier.sunk()).toBe(true);
 });
 
-test.skip('take shots and miss a placed ship', () => {
+test('take shots and miss a placed ship', () => {
   const newBoard = gameBoard();
   newBoard.placeShip(15, ships.carrier);
   newBoard.receiveAttack(25);
@@ -105,7 +103,7 @@ test.skip('take shots and miss a placed ship', () => {
   expect(newBoard.board[29].shotTaken).toBe(true);
 });
 
-test.skip('all ships sunk', () => {
+test('all ships sunk', () => {
   const newCarrier = shipFactory(ships.carrier);
   const newBoard = gameBoard();
   newBoard.placeShip(15, ships.carrier);
@@ -126,5 +124,5 @@ test.skip('all ships sunk', () => {
   expect(newBoard.board[19].hasShip).toBe(true);
   expect(newBoard.board[16].shotTaken).toBe(true);
   expect(newCarrier.sunk()).toBe(true);
-  expect(newBoard.allShipsSunk()).toBe(true);
+  expect(newBoard.allSunk()).toBe(true);
 });

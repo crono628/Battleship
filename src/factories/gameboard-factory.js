@@ -10,6 +10,17 @@ const gameBoard = () => {
   let horizontal = true;
   const toggleAxis = () => (horizontal = !horizontal);
 
+  const testEdge = (coordinate, boat) => {
+    let edges = [9, 19, 29, 39, 49, 59, 69, 79, 89, 99];
+    for (let i = 0; i < boat.length; i++) {
+      if (edges.some((edge) => coordinate + i === edge)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+  };
+
   const placeShip = (coordinate, boat) => {
     let shipArray = [];
     for (let i = 0; i < boat.length; i++) {
@@ -26,7 +37,7 @@ const gameBoard = () => {
     fleet.push({
       name: boat.name,
       location: shipArray,
-      functions: shipFactory(boat)
+      functions: shipFactory(boat),
     });
   };
 
@@ -63,7 +74,9 @@ const gameBoard = () => {
     receiveAttack,
     missedShots,
     allSunk,
-    toggleAxis
+    toggleAxis,
+    board,
+    testEdge,
   };
 };
 

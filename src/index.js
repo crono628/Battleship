@@ -1,24 +1,21 @@
 import { shipFactory } from './factories/ship-factory.js';
 import { gameBoard } from './factories/gameboard-factory.js';
 import { ships } from './components/ships.js';
-import { playerFactory } from './factories/player-factory.js';
+// import { playerFactory } from './factories/player-factory.js';
 
-// let thisGuy = shipFactory(3);
-// thisGuy.hit(2);
-// thisGuy.hit(1);
-
-// console.log(thisGuy.sunk());
-
-// let mikey = playerFactory();
-// console.log(mikey.playerShips);
-
-// const cpuPlayer = playerFactory();
-
-// const boardFilter = cpuPlayer.playerBoard.board.filter(
-//   (ship) => ship.hasShip === true
-// );
-
-// console.log(
-//   cpuPlayer.edgeCheck(ships[4], [9, 19, 29, 39, 49, 59, 69, 79, 89, 99], 51)
-// );
-// console.log('ships: ' + boardFilter);
+let player = gameBoard();
+// player.placeShip(10, ships.destroyer);
+// // player.toggleAxis();
+// player.placeShip(20, ships.submarine);
+// player.receiveAttack(11);
+// player.receiveAttack(15);
+// player.receiveAttack(10);
+// player.receiveAttack(20);
+// player.receiveAttack(21);
+// player.receiveAttack(22);
+// let finder = player.findFleetShip("destroyer");
+// // console.log(player.fleet[0].functions);
+// // console.log(finder.functions.sunk());
+// // console.log(player.findBoardLocation(10));
+// console.log(player.allSunk());
+console.log(player.testEdge(7, ships.carrier));
