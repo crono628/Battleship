@@ -1,6 +1,6 @@
 import { shipFactory } from '../factories/ship-factory.js';
 
-const gameBoard = () => {
+const gameBoardFactory = () => {
   let board = [];
   let hold = [];
   for (let i = 0; i < 10; i++) {
@@ -10,7 +10,7 @@ const gameBoard = () => {
         shotTaken: false,
         shipName: null,
         row: i,
-        column: j
+        column: j,
       });
     }
     board.push(hold);
@@ -26,27 +26,50 @@ const gameBoard = () => {
 
   const legalMove = (xCoordinate, yCoordinate, ship) => {
     let thisMove = true;
-    let xLengthArr = [];
-    let yLengthArr = [];
+    let goAhead = true;
+    let xArr = [];
+    let yArr = [];
     for (let i = 0; i < ship.length; i++) {
-      xLengthArr.push(xCoordinate + i);
-      yLengthArr.push(yCoordinate + i);
+      let row = yCoordinate + i;
+      let column = xCoordinate + i;
+      xArr.push(column);
+      yArr.push(row);
     }
     if (horizontal) {
-      if (xLengthArr.some((num) => num > 9)) {
-        thisMove = false;
+      for (let i = 0; i < yArr.length; i++) {
+        if (yArr[i] > 9) {
+          goAhead = false;
+        }
+      }
+      for (let i = 0; i < yArr.length; i++) {
+        if (goAhead) {
+          if (board[yArr[i]][xArr[i]].hasShip) {
+            thisMove = false;
+            // console.log("nope horizontal");
+          }
+        }
       }
     }
     if (!horizontal) {
-      if (yLengthArr.some((num) => num > 9)) {
-        thisMove = false;
+      for (let i = 0; i < xArr.length; i++) {
+        if (xArr[i] > 9) {
+          goAhead = false;
+        }
+      }
+      for (let i = 0; i < xArr.length; i++) {
+        if (goAhead) {
+          if (board[yArr[i]][xArr[i]].hasShip) {
+            thisMove = false;
+            // console.log("nope horizontal");
+          }
+        }
       }
     }
     return thisMove;
   };
 
   const placeShip = (yRow, xColumn, boat) => {
-    if (legalMove(xColumn, yRow, boat) == true) {
+    if (legalMove(xColumn, yRow, boat)) {
       let shipArray = [];
       for (let i = 0; i < boat.length; i++) {
         if (horizontal) {
@@ -62,10 +85,9 @@ const gameBoard = () => {
       fleet.push({
         name: boat.name,
         location: shipArray,
-        functions: shipFactory(boat)
+        functions: shipFactory(boat),
       });
     } else {
-      console.log("false");
       return false;
     }
   };
@@ -88,7 +110,7 @@ const gameBoard = () => {
       ship.functions.hit(theIndex, yRow, xColumn);
     }
     if (!here.hasShip) {
-      missedShots.push(yRow, xColumn);
+      missedShots.push([yRow, xColumn]);
     }
   };
 
@@ -109,8 +131,8 @@ const gameBoard = () => {
     missedShots,
     allSunk,
     toggleAxis,
-    board
+    board,
   };
 };
 
-export { gameBoard };
+export { gameBoardFactory };
