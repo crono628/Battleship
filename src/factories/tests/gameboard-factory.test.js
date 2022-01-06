@@ -92,6 +92,12 @@ test('cannot place 2 of the same ship', () => {
   const newBoard = gameBoardFactory();
   newBoard.placeShip(0, 0, ships.cruiser);
   newBoard.placeShip(1, 0, ships.cruiser);
+  newBoard.toggleAxis();
+  newBoard.placeShip(2, 0, ships.cruiser);
+  newBoard.placeShip(3, 0, ships.battleship);
   expect(newBoard.board[0][0].hasShip).toBe(true);
   expect(newBoard.board[1][0].hasShip).toBe(false);
+  expect(newBoard.board[2][0].hasShip).toBe(false);
+  expect(newBoard.board[3][0].hasShip).toBe(true);
+  expect(newBoard.board[4][0].hasShip).toBe(true);
 });

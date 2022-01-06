@@ -19,18 +19,17 @@ const gameBoardFactory = () => {
 
   const fleet = [];
   function findFleetShip(ship) {
-    let arr = [];
-    let switcher = true;
-    let foundIt = fleet.find(({ name }) => name === ship);
-    if (foundIt) {
-      arr.push(foundIt);
+    return fleet.find(({ name }) => name === ship);
+  }
+
+  function preventDouble(ship) {
+    for (const boat in fleet) {
+      const finder = fleet[boat];
+      if (finder.name == ship.name) {
+        return false;
+      } else return true;
     }
-    if (arr.length > 1) {
-      switcher = false;
-    }
-    if (switcher) {
-      return foundIt;
-    } else return false;
+    return true;
   }
 
   let horizontal = true;
@@ -66,7 +65,7 @@ const gameBoardFactory = () => {
   };
 
   const placeShip = (yRow, xColumn, boat) => {
-    if (!findFleetShip(boat)) {
+    if (!findFleetShip(boat) && preventDouble(boat)) {
       if (legalMove(xColumn, yRow, boat)) {
         let shipArray = [];
         for (let i = 0; i < boat.length; i++) {
