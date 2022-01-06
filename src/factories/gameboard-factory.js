@@ -18,77 +18,76 @@ const gameBoardFactory = () => {
   }
 
   const fleet = [];
-  const findFleetShip = (ship) => fleet.find(({ name }) => name === ship);
+  function findFleetShip(ship) {
+    let arr = [];
+    let switcher = true;
+    let foundIt = fleet.find(({ name }) => name === ship);
+    if (foundIt) {
+      arr.push(foundIt);
+    }
+    if (arr.length > 1) {
+      switcher = false;
+    }
+    if (switcher) {
+      return foundIt;
+    } else return false;
+  }
 
   let horizontal = true;
 
   const toggleAxis = () => (horizontal = !horizontal);
 
   const legalMove = (xCoordinate, yCoordinate, ship) => {
-    let thisMove = true;
-    let goAhead = true;
-    let xArr = [];
-    let yArr = [];
-    for (let i = 0; i < ship.length; i++) {
-      let row = yCoordinate + i;
-      let column = xCoordinate + i;
-      xArr.push(column);
-      yArr.push(row);
-    }
-    if (horizontal) {
-      for (let i = 0; i < yArr.length; i++) {
-        if (yArr[i] > 9) {
-          goAhead = false;
-        }
+    let isLegal = true;
+    let possibilities = [];
+    if (xCoordinate + ship.length > 10 || yCoordinate + ship.length > 10) {
+      isLegal = false;
+      return false;
+    } else if (horizontal) {
+      for (let i = 0; i < ship.length; i++) {
+        possibilities.push([yCoordinate, xCoordinate + i]);
       }
-      for (let i = 0; i < yArr.length; i++) {
-        if (goAhead) {
-          if (board[yArr[i]][xArr[i]].hasShip) {
-            thisMove = false;
-            // console.log("nope horizontal");
+    } else {
+      for (let i = 0; i < ship.length; i++) {
+        possibilities.push([yCoordinate + i, xCoordinate]);
+      }
+    }
+    if (possibilities.length == ship.length) {
+      for (let i = 0; i < possibilities.length; i++) {
+        let possibility = possibilities[i];
+        for (let j = 0; j < possibility.length; j++) {
+          if (board[possibility[0]][possibility[1]].hasShip == true) {
+            isLegal = false;
           }
         }
       }
     }
-    if (!horizontal) {
-      for (let i = 0; i < xArr.length; i++) {
-        if (xArr[i] > 9) {
-          goAhead = false;
-        }
-      }
-      for (let i = 0; i < xArr.length; i++) {
-        if (goAhead) {
-          if (board[yArr[i]][xArr[i]].hasShip) {
-            thisMove = false;
-            // console.log("nope horizontal");
-          }
-        }
-      }
-    }
-    return thisMove;
+    return isLegal;
   };
 
   const placeShip = (yRow, xColumn, boat) => {
-    if (legalMove(xColumn, yRow, boat)) {
-      let shipArray = [];
-      for (let i = 0; i < boat.length; i++) {
-        if (horizontal) {
-          board[yRow][xColumn + i].hasShip = true;
-          board[yRow][xColumn + i].shipName = boat.name;
-          shipArray.push([yRow, xColumn + i]);
-        } else {
-          board[yRow + i][xColumn].hasShip = true;
-          board[yRow + i][xColumn].shipName = boat.name;
-          shipArray.push([yRow + i, xColumn]);
+    if (!findFleetShip(boat)) {
+      if (legalMove(xColumn, yRow, boat)) {
+        let shipArray = [];
+        for (let i = 0; i < boat.length; i++) {
+          if (horizontal) {
+            board[yRow][xColumn + i].hasShip = true;
+            board[yRow][xColumn + i].shipName = boat.name;
+            shipArray.push([yRow, xColumn + i]);
+          } else {
+            board[yRow + i][xColumn].hasShip = true;
+            board[yRow + i][xColumn].shipName = boat.name;
+            shipArray.push([yRow + i, xColumn]);
+          }
         }
+        fleet.push({
+          name: boat.name,
+          location: shipArray,
+          functions: shipFactory(boat),
+        });
+      } else {
+        return false;
       }
-      fleet.push({
-        name: boat.name,
-        location: shipArray,
-        functions: shipFactory(boat),
-      });
-    } else {
-      return false;
     }
   };
 
