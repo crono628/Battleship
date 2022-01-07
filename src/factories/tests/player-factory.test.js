@@ -9,14 +9,10 @@ test('player has 5 ships', () => {
   playerOne.placeShip(2, 0, ships.destroyer);
   playerOne.placeShip(3, 0, ships.destroyer);
   playerOne.placeShip(4, 0, ships.submarine);
-  console.log(playerOne.fleet.find((x) => x.name == 'destroyer'));
   expect(playerOne.fleet.length).toBe(5);
 });
 
-// test('cpu has 5 ships placed randomly and legally', () => {
-//   const cpuPlayer = playerFactory();
-
-//   expect(
-//     cpuPlayer.playerBoard.board.filter((item) => item.hasShip === true).length
-//   ).toBe(17);
-// });
+test('cpu has 5 ships placed randomly and legally', () => {
+  const cpuPlayer = playerFactory();
+  expect(cpuPlayer.fleet.length).toBe(5);
+});

@@ -65,7 +65,7 @@ const gameBoardFactory = () => {
   };
 
   const placeShip = (yRow, xColumn, boat) => {
-    if (!findFleetShip(boat) && preventDouble(boat)) {
+    if (preventDouble(boat)) {
       if (legalMove(xColumn, yRow, boat)) {
         let shipArray = [];
         for (let i = 0; i < boat.length; i++) {
@@ -98,7 +98,6 @@ const gameBoardFactory = () => {
     if (here.hasShip) {
       let ship = findFleetShip(here.shipName);
       let { location } = ship;
-      let findIt = [yRow, xColumn];
       let theIndex;
       location.forEach((spot, index) => {
         if (spot[0] === yRow && spot[1] === xColumn) {

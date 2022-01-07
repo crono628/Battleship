@@ -26,8 +26,13 @@ const playerFactory = (human) => {
     };
 
     let shipsClone = { ...ships };
-    for (let ship in shipsClone) {
-      // prototype.placeShip(randomTwo, randomOne, ship)
+    while (prototype.fleet.length < 5) {
+      for (let ship in shipsClone) {
+        let rando = Math.floor(Math.random() * 9);
+        if (prototype.placeShip(rando, rando, shipsClone[ship]) !== false) {
+          delete shipsClone[ship];
+        }
+      }
     }
 
     return Object.assign({}, prototype, { attack, shipsClone });

@@ -5,7 +5,6 @@ test('enough hits to sink', () => {
   let newShip = shipFactory(ships.destroyer);
   newShip.hit(0, 0, 0);
   newShip.hit(1, 0, 1);
-  console.log(newShip.health);
   expect(newShip.sunk()).toBe(true);
 });
 
