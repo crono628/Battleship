@@ -35,6 +35,15 @@ const gameBoardFactory = () => {
   let horizontal = true;
 
   const toggleAxis = () => (horizontal = !horizontal);
+  const randomAxis = () => {
+    let randomBool = Math.random() < 0.5;
+    if (randomBool) {
+      horizontal = true;
+    } else {
+      horizontal = false;
+    }
+    return horizontal;
+  };
 
   const legalMove = (xCoordinate, yCoordinate, ship) => {
     let isLegal = true;
@@ -129,6 +138,7 @@ const gameBoardFactory = () => {
     allSunk,
     toggleAxis,
     board,
+    randomAxis,
   };
 };
 

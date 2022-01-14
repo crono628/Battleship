@@ -2,7 +2,9 @@
   "type": "module",
   "devDependencies": {
     "@babel/preset-env": "^7.16.4",
+    "css-loader": "^6.5.1",
     "jest": "^27.4.0",
+    "style-loader": "^3.3.1",
     "webpack": "^5.64.4",
     "webpack-cli": "^4.9.1"
   },

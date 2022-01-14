@@ -1,4 +1,3 @@
-import { autoShip } from '../helpers/auto-ship.js';
 import { gameBoardFactory } from './gameboard-factory.js';
 import { ships } from '../components/ships.js';
 
@@ -20,15 +19,21 @@ const playerFactory = (human) => {
     let prototype = gameBoardFactory();
     const attack = (someOne, someY, someX) => {
       if (!playerOneTurn) {
-        someOne.receiveAttack(someY, someX);
-        switchTurn();
-      } else console.log('not cpu turn');
+        if ((someY, someX)) {
+          someOne.receiveAttack(someY, someX);
+          switchTurn();
+        } else {
+          let rando = Math.floor(Math.random() * 9);
+          someOne.receiveAttack(rando, rando);
+        }
+      } else return false;
     };
 
     let shipsClone = { ...ships };
     while (prototype.fleet.length < 5) {
       for (let ship in shipsClone) {
         let rando = Math.floor(Math.random() * 9);
+        prototype.randomAxis();
         if (prototype.placeShip(rando, rando, shipsClone[ship]) !== false) {
           delete shipsClone[ship];
         }
@@ -39,4 +44,4 @@ const playerFactory = (human) => {
   }
 };
 
-export { playerFactory };
+export { playerFactory, playerOneTurn };

@@ -12,7 +12,15 @@ test('player has 5 ships', () => {
   expect(playerOne.fleet.length).toBe(5);
 });
 
-test('cpu has 5 ships placed randomly and legally', () => {
+test('cpu has 5 ships placed legally and randomly (vertical and horizontal) ', () => {
   const cpuPlayer = playerFactory();
   expect(cpuPlayer.fleet.length).toBe(5);
+});
+
+test('player and cpu take turns attacking', () => {
+  const playerOne = playerFactory('human');
+  const cpu = playerFactory();
+  playerOne.placeShip(0, 0, playerOne.shipsClone.carrier);
+  cpu.attack(playerOne, 0, 0);
+  expect(cpu.attack(playerOne, 0, 0)).toBe(false);
 });
