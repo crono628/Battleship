@@ -8,7 +8,8 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "playerFactory": () => (/* binding */ playerFactory),
-/* harmony export */   "playerOneTurn": () => (/* binding */ playerOneTurn)
+/* harmony export */   "playerOneTurn": () => (/* binding */ playerOneTurn),
+/* harmony export */   "switchTurn": () => (/* binding */ switchTurn)
 /* harmony export */ });
 /* harmony import */ var _gameboard_factory_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(2);
 /* harmony import */ var _components_ships_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
@@ -120,18 +121,36 @@ const gameBoardFactory = () => {
   const legalMove = (xCoordinate, yCoordinate, ship) => {
     let isLegal = true;
     let possibilities = [];
-    if (xCoordinate + ship.length > 10 || yCoordinate + ship.length > 10) {
-      isLegal = false;
-      return false;
-    } else if (horizontal) {
-      for (let i = 0; i < ship.length; i++) {
-        possibilities.push([yCoordinate, xCoordinate + i]);
-      }
-    } else {
-      for (let i = 0; i < ship.length; i++) {
-        possibilities.push([yCoordinate + i, xCoordinate]);
+    if (horizontal) {
+      if (xCoordinate + ship.length > 10) {
+        isLegal = false;
+      } else {
+        for (let i = 0; i < ship.length; i++) {
+          possibilities.push([yCoordinate, xCoordinate + i]);
+        }
       }
     }
+    if (!horizontal) {
+      if (yCoordinate + ship.length > 10) {
+        isLegal = false;
+      } else {
+        for (let i = 0; i < ship.length; i++) {
+          possibilities.push([yCoordinate + i, xCoordinate]);
+        }
+      }
+    }
+    // if (xCoordinate + ship.length > 10 || yCoordinate + ship.length > 10) {
+    //   isLegal = false;
+    //   return false;
+    // } else if (horizontal) {
+    //   for (let i = 0; i < ship.length; i++) {
+    //     possibilities.push([yCoordinate, xCoordinate + i]);
+    //   }
+    // } else {
+    //   for (let i = 0; i < ship.length; i++) {
+    //     possibilities.push([yCoordinate + i, xCoordinate]);
+    //   }
+    // }
     if (possibilities.length == ship.length) {
       for (let i = 0; i < possibilities.length; i++) {
         let possibility = possibilities[i];
@@ -211,6 +230,8 @@ const gameBoardFactory = () => {
     toggleAxis,
     board,
     randomAxis,
+    legalMove,
+    horizontal,
   };
 };
 
@@ -330,27 +351,50 @@ var __webpack_exports__ = {};
 (() => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _factories_player_factory_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(1);
-/* harmony import */ var _components_ships_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(4);
-
 
 
 const playerSection = document.querySelector('.player-section');
 const cpuSection = document.querySelector('.cpu-section');
+const axisBtn = document.querySelector('.axis-change');
+const cells = document.querySelectorAll('.cell');
 
 let playerOne = (0,_factories_player_factory_js__WEBPACK_IMPORTED_MODULE_0__.playerFactory)('human');
 let computer = (0,_factories_player_factory_js__WEBPACK_IMPORTED_MODULE_0__.playerFactory)();
 
-if (!_factories_player_factory_js__WEBPACK_IMPORTED_MODULE_0__.playerOneTurn && !playerOne.allSunk() && computer.allSunk()) {
-  let rando = Math.floor(Math.random() * 9);
-  computer.attack(playerOne, rando, rando);
+// if (!playerOneTurn && !playerOne.allSunk() && computer.allSunk()) {
+//   let rando = Math.floor(Math.random() * 9);
+//   computer.attack(playerOne, rando, rando);
+// }
+
+function chooseShip() {
+  if (Object.getOwnPropertyNames(playerOne.shipsClone).length >= 1) {
+    for (const ship in playerOne.shipsClone) {
+      const element = playerOne.shipsClone[ship];
+      delete playerOne.shipsClone[ship];
+      if (Object.getOwnPropertyNames(playerOne.shipsClone).length == 0) {
+        axisBtn.style.display = 'none';
+      }
+      return element;
+    }
+  } else {
+    return false;
+  }
+}
+
+function findShip() {
+  if (Object.getOwnPropertyNames(playerOne.shipsClone).length >= 1) {
+    for (const ship in playerOne.shipsClone) {
+      const element = playerOne.shipsClone[ship];
+      return element;
+    }
+  } else {
+    return false;
+  }
 }
 
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     const cellDiv = document.createElement('div');
-    cellDiv.addEventListener('click', () => {
-      console.log([cellDiv.dataset.row, cellDiv.dataset.column]);
-    });
     cellDiv.classList.add('cell', 'player-cell');
     cellDiv.dataset.row = `${i}`;
     cellDiv.dataset.column = `${j}`;
@@ -361,8 +405,22 @@ for (let i = 0; i < 10; i++) {
 for (let i = 0; i < 10; i++) {
   for (let j = 0; j < 10; j++) {
     const cellDiv = document.createElement('div');
-    cellDiv.addEventListener('click', () => {
-      console.log([cellDiv.dataset.row, cellDiv.dataset.column]);
+    cellDiv.addEventListener('click', (e) => {
+      e.target.classList.add('hit');
+      if (Object.getOwnPropertyNames(playerOne.shipsClone).length == 0) {
+        if (!playerOne.allSunk() || !computer.allSunk()) {
+          playerOne.attack(
+            computer,
+            parseInt(e.target.dataset.row),
+            parseInt(e.target.dataset.column)
+          );
+          let rando = Math.floor(Math.random() * 9);
+          while (!_factories_player_factory_js__WEBPACK_IMPORTED_MODULE_0__.playerOneTurn) {
+            computer.attack(playerOne, rando, rando);
+          }
+          findPlayerShip();
+        }
+      }
     });
     cellDiv.classList.add('cell', 'cpu-cell');
     cellDiv.dataset.row = `${i}`;
@@ -371,26 +429,104 @@ for (let i = 0; i < 10; i++) {
   }
 }
 
+const playerCell = document.querySelectorAll('.player-cell');
 const cellRow = document.querySelectorAll('[data-row]');
-const cellColumn = document.querySelectorAll('[data-column]');
 
-let finder = computer.board.map((x) => {
-  return x.filter((y) => y.hasShip == true);
-});
-
-finder.forEach((item) => {
-  item.forEach((x) => {
-    cellRow.forEach((element) => {
-      if (element.classList.contains('cpu-cell')) {
-        if (
-          element.dataset.row == x.row &&
-          element.dataset.column == x.column
-        ) {
-          element.style.backgroundColor = 'red';
-        }
-      }
+function findPlayerShip() {
+  let finder = playerOne.board.map((x) => {
+    return x.filter((y) => y.shotTaken == true);
+  });
+  let otherFinder = finder.map((x) => {
+    return x.filter((y) => y.hasShip == true);
+  });
+  finder.forEach((element) => {
+    element.forEach((cell) => {
+      if (cell.shotTaken) {
+        document.querySelector(
+          `[data-row="${cell.row}"], [data-column="${cell.column}"], .player-cell`
+        ).style.backgroundColor = 'black';
+      } else return false;
     });
   });
+  otherFinder.forEach((element) => {
+    element.forEach((cell) => {
+      if (cell.hasShip) {
+        document.querySelector(
+          `[data-row="${cell.row}"], [data-column="${cell.column}"], .player-cell`
+        ).style.backgroundColor = 'purple';
+      } else return false;
+    });
+  });
+}
+
+playerCell.forEach((cell) => {
+  cell.addEventListener('click', (e) => {
+    if (
+      playerOne.placeShip(
+        parseInt(e.target.dataset.row),
+        parseInt(e.target.dataset.column),
+        findShip()
+      ) !== false
+    ) {
+      playerOne.placeShip(
+        parseInt(e.target.dataset.row),
+        parseInt(e.target.dataset.column),
+        chooseShip()
+      );
+      findIt();
+    } else {
+      return false;
+    }
+  });
+});
+
+function findIt() {
+  let finder = playerOne.board.map((x) => {
+    return x.filter((y) => y.hasShip == true);
+  });
+  finder.forEach((item) => {
+    item.forEach((x) => {
+      cellRow.forEach((element) => {
+        if (element.classList.contains('player-cell')) {
+          if (
+            element.dataset.row == x.row &&
+            element.dataset.column == x.column
+          ) {
+            switch (x.shipName) {
+              case 'destroyer':
+                element.style.backgroundColor = 'hsl(0, 100%, 75%)';
+                break;
+              case 'submarine':
+                element.style.backgroundColor = 'hsl(30, 100%, 75%)';
+                break;
+              case 'cruiser':
+                element.style.backgroundColor = 'hsl(60, 100%, 75%)';
+                break;
+              case 'battleship':
+                element.style.backgroundColor = 'hsl(90, 100%, 75%)';
+                break;
+              case 'carrier':
+                element.style.backgroundColor = 'hsl(230, 100%, 75%)';
+                break;
+              default:
+                break;
+            }
+          }
+        }
+      });
+    });
+  });
+}
+
+let displayToggle = true;
+axisBtn.addEventListener('click', () => {
+  displayToggle = !displayToggle;
+  playerOne.toggleAxis();
+  if (displayToggle) {
+    axisBtn.textContent = 'Horizontal';
+  } else {
+    axisBtn.textContent = 'Vertical';
+  }
 });
 
 })();

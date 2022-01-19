@@ -48,18 +48,36 @@ const gameBoardFactory = () => {
   const legalMove = (xCoordinate, yCoordinate, ship) => {
     let isLegal = true;
     let possibilities = [];
-    if (xCoordinate + ship.length > 10 || yCoordinate + ship.length > 10) {
-      isLegal = false;
-      return false;
-    } else if (horizontal) {
-      for (let i = 0; i < ship.length; i++) {
-        possibilities.push([yCoordinate, xCoordinate + i]);
-      }
-    } else {
-      for (let i = 0; i < ship.length; i++) {
-        possibilities.push([yCoordinate + i, xCoordinate]);
+    if (horizontal) {
+      if (xCoordinate + ship.length > 10) {
+        isLegal = false;
+      } else {
+        for (let i = 0; i < ship.length; i++) {
+          possibilities.push([yCoordinate, xCoordinate + i]);
+        }
       }
     }
+    if (!horizontal) {
+      if (yCoordinate + ship.length > 10) {
+        isLegal = false;
+      } else {
+        for (let i = 0; i < ship.length; i++) {
+          possibilities.push([yCoordinate + i, xCoordinate]);
+        }
+      }
+    }
+    // if (xCoordinate + ship.length > 10 || yCoordinate + ship.length > 10) {
+    //   isLegal = false;
+    //   return false;
+    // } else if (horizontal) {
+    //   for (let i = 0; i < ship.length; i++) {
+    //     possibilities.push([yCoordinate, xCoordinate + i]);
+    //   }
+    // } else {
+    //   for (let i = 0; i < ship.length; i++) {
+    //     possibilities.push([yCoordinate + i, xCoordinate]);
+    //   }
+    // }
     if (possibilities.length == ship.length) {
       for (let i = 0; i < possibilities.length; i++) {
         let possibility = possibilities[i];
@@ -139,6 +157,8 @@ const gameBoardFactory = () => {
     toggleAxis,
     board,
     randomAxis,
+    legalMove,
+    horizontal,
   };
 };
 

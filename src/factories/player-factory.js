@@ -44,4 +44,4 @@ const playerFactory = (human) => {
   }
 };
 
-export { playerFactory, playerOneTurn };
+export { playerFactory, playerOneTurn, switchTurn };

@@ -34,3 +34,10 @@ body {
   border: solid black 1px;
   background-color: antiquewhite;
 }
+
+.axis-change {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 20px;
+}
