@@ -4,6 +4,8 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 import shipFactory from './factories/shipFactory';
+import gameboardFactory from './factories/gameboardFactory';
+import { ships } from './factories/ships';
 
 describe('ship factory', () => {
   let threes;
@@ -12,7 +14,7 @@ describe('ship factory', () => {
     threes = shipFactory(3, [0, 10, 20]);
     twos = shipFactory(2, [42, 43]);
   });
-  it("takes hits and doesn't sink", () => {
+  it("takes some hits and doesn't sink", () => {
     threes.hit(10);
     threes.hit(20);
     expect(threes.publicHealth).toEqual([null, 'x', 'x']);
@@ -26,5 +28,32 @@ describe('ship factory', () => {
     twos.hit(43);
     expect(threes.sunk()).toBe(true);
     expect(twos.sunk()).toBe(true);
+  });
+});
+
+describe('gameboard factory', () => {
+  let human;
+  let computer;
+  beforeEach(() => {
+    human = gameboardFactory();
+    computer = gameboardFactory();
+  });
+  it('produces 100 cells with hasShip and shotTaken properties', () => {
+    let testProps = human.publicBoard.every((item) => {
+      return item.hasShip === false, item.shotTaken === false;
+    });
+    expect(human.publicBoard.length).toBe(100);
+    expect(testProps).toBe(true);
+  });
+  it('receives attacks', () => {
+    human.receiveAttack(10);
+    expect(human.publicBoard[10].shotTaken).toBe(true);
+    expect(human.publicBoard[11].shotTaken).toBe(false);
+    expect(computer.publicBoard[10].shotTaken).toBe(false);
+  });
+  it('knows where edges are', () => {
+    expect(human.checkEdge(ships.carrier, 10)).toBe(true);
+    expect(human.checkEdge(ships.battleship, 17)).toBe(false);
+    expect(human.checkEdge(ships.cruiser, 88)).toBe(false);
   });
 });
