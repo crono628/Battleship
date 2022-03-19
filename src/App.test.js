@@ -39,11 +39,13 @@ describe('gameboard factory', () => {
     computer = gameboardFactory();
   });
   it('produces 100 cells with hasShip and shotTaken properties', () => {
-    let testProps = human.publicBoard.every((item) => {
-      return item.hasShip === false, item.shotTaken === false;
-    });
     expect(human.publicBoard.length).toBe(100);
-    expect(testProps).toBe(true);
+    expect(human.publicBoard.every((item) => item.hasShip === false)).toBe(
+      true
+    );
+    expect(human.publicBoard.every((item) => item.shotTaken === false)).toBe(
+      true
+    );
   });
   it('receives attacks', () => {
     human.receiveAttack(10);

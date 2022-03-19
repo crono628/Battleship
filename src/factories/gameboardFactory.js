@@ -44,12 +44,11 @@ const gameboardFactory = () => {
         sectionArr.push(loc + i * 10);
       }
       for (let i = 0; i < sectionArr.length; i++) {
-        if (sectionArr[i] > 99) {
+        if (sectionArr[i] >= 99) {
           counter++;
         }
       }
     }
-
     if (counter > 1) {
       return (legalEdges = false);
     } else {
@@ -72,18 +71,13 @@ const gameboardFactory = () => {
       for (let i = 0; i < ship.length; i++) {
         sectionArr.push(loc + i * 10);
       }
-      if (sectionArr.some((num) => num > 99)) {
-        return;
-      } else {
-        sectionArr.forEach((num) => section.push(board[num]));
-      }
+      sectionArr.forEach((num) => section.push(board[num]));
       let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
       if (checkOpenSpaces) {
         section.forEach((spot) => (board[spot.id].hasShip = true));
       }
     }
   };
-
   return { publicBoard, receiveAttack, checkEdge, placeShip, toggleHorizontal };
 };
 
