@@ -51,9 +51,30 @@ describe('gameboard factory', () => {
     expect(human.publicBoard[11].shotTaken).toBe(false);
     expect(computer.publicBoard[10].shotTaken).toBe(false);
   });
-  it('knows where edges are', () => {
+  it('knows where horizontal edges are', () => {
     expect(human.checkEdge(ships.carrier, 10)).toBe(true);
     expect(human.checkEdge(ships.battleship, 17)).toBe(false);
     expect(human.checkEdge(ships.cruiser, 88)).toBe(false);
+  });
+  it('knows where vertical edges are', () => {
+    human.toggleHorizontal();
+    expect(human.checkEdge(ships.carrier, 0)).toBe(true);
+    expect(human.checkEdge(ships.battleship, 99)).toBe(false);
+    expect(human.checkEdge(ships.cruiser, 90)).toBe(false);
+  });
+  it('places ship horizontally and does not overlap other ships', () => {
+    human.placeShip(ships.carrier, 0);
+    human.placeShip(ships.battleship, 3);
+    expect(human.publicBoard[2].hasShip).toBe(true);
+    expect(human.publicBoard[5].hasShip).toBe(false);
+    expect(computer.publicBoard[2].hasShip).toBe(false);
+  });
+  it('places ship vertically and does not overlap other ships', () => {
+    human.toggleHorizontal();
+    human.placeShip(ships.carrier, 0);
+    human.placeShip(ships.battleship, 30);
+    expect(human.publicBoard[20].hasShip).toBe(true);
+    expect(human.publicBoard[50].hasShip).toBe(false);
+    expect(computer.publicBoard[20].hasShip).toBe(false);
   });
 });

@@ -24,15 +24,32 @@ const gameboardFactory = () => {
   };
 
   let legalEdges = true;
+  let horizontal = true;
+
+  const toggleHorizontal = () => (horizontal = !horizontal);
 
   const checkEdge = (ship, loc) => {
-    let section = board.slice(loc, loc + ship.length);
     let counter = 0;
-    for (let i = 0; i < ship.length; i++) {
-      if (edges.includes(section[i].id)) {
-        counter++;
+    if (horizontal) {
+      let section = board.slice(loc, loc + ship.length);
+      for (let i = 0; i < ship.length; i++) {
+        if (edges.includes(section[i].id)) {
+          counter++;
+        }
       }
     }
+    if (!horizontal) {
+      let sectionArr = [];
+      for (let i = 0; i < ship.length; i++) {
+        sectionArr.push(loc + i * 10);
+      }
+      for (let i = 0; i < sectionArr.length; i++) {
+        if (sectionArr[i] > 99) {
+          counter++;
+        }
+      }
+    }
+
     if (counter > 1) {
       return (legalEdges = false);
     } else {
@@ -42,16 +59,32 @@ const gameboardFactory = () => {
 
   const placeShip = (ship, loc) => {
     checkEdge(ship, loc);
-    if (legalEdges && loc + ship.length <= 99) {
+    if (legalEdges && horizontal && loc + ship.length <= 99) {
       let section = board.slice(loc, loc + ship.length);
       let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
       if (checkOpenSpaces) {
         section.forEach((spot) => (board[spot.id].hasShip = true));
       } else return;
-    } else return;
+    }
+    if (legalEdges && !horizontal) {
+      let section = [];
+      let sectionArr = [];
+      for (let i = 0; i < ship.length; i++) {
+        sectionArr.push(loc + i * 10);
+      }
+      if (sectionArr.some((num) => num > 99)) {
+        return;
+      } else {
+        sectionArr.forEach((num) => section.push(board[num]));
+      }
+      let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
+      if (checkOpenSpaces) {
+        section.forEach((spot) => (board[spot.id].hasShip = true));
+      }
+    }
   };
 
-  return { publicBoard, receiveAttack, checkEdge, placeShip };
+  return { publicBoard, receiveAttack, checkEdge, placeShip, toggleHorizontal };
 };
 
 export default gameboardFactory;
