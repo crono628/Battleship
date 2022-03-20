@@ -4,7 +4,6 @@ import gameboardFactory from './gameboardFactory';
 const playerFactory = (name) => {
   let playerOneTurn = true;
   let computer = false;
-  const toggleComputer = () => (computer = !computer);
   let fleet = [];
   let dockYard = { ...ships };
   const prototype = gameboardFactory();
@@ -12,13 +11,20 @@ const playerFactory = (name) => {
   const handlePlacement = (boat, loc) => {
     for (const choice in dockYard) {
       if (boat === dockYard[choice]) {
-        prototype.placeShip(boat, loc);
-        fleet.push({ boat: boat.name, length: boat.length, loc });
-        delete dockYard[choice];
+        if (prototype.checkEdge(boat, loc)) {
+          prototype.placeShip(boat, loc);
+          fleet.push({
+            boat: boat.name,
+            length: boat.length,
+            loc,
+          });
+          delete dockYard[choice];
+        }
       }
     }
   };
 
+  const toggleComputer = () => (computer = !computer);
   const handleComputerPlacement = () => {
     if (computer) {
       while (fleet.length < 5) {

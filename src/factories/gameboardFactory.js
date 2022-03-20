@@ -97,6 +97,9 @@ const gameboardFactory = () => {
       }
     }
   };
+
+  const attack = (someone, somewhere) => {};
+
   return Object.assign({}, prototype, {
     publicBoard,
     receiveAttack,

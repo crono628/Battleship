@@ -103,11 +103,9 @@ describe('player factory', () => {
   it('places all boats for the computer randomly and legally', () => {
     computer.toggleComputer();
     computer.handleComputerPlacement();
-    console.log(computer.publicBoard);
-    console.log(computer.fleet);
-
-    // console.log(Object.keys(computer.dockYard).length);
+    let boardHasShip = computer.publicBoard.filter((spot) => spot.hasShip);
     expect(Object.keys(computer.dockYard).length).toBe(0);
     expect(computer.fleet.length).toBe(5);
+    expect(boardHasShip.length).toBe(17);
   });
 });
