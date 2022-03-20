@@ -5,6 +5,7 @@ import userEvent from '@testing-library/user-event';
 import App from './App';
 import shipFactory from './factories/shipFactory';
 import gameboardFactory from './factories/gameboardFactory';
+import playerFactory from './factories/playerFactory';
 import { ships } from './factories/ships';
 
 describe('ship factory', () => {
@@ -78,5 +79,26 @@ describe('gameboard factory', () => {
     expect(human.publicBoard[20].hasShip).toBe(true);
     expect(human.publicBoard[50].hasShip).toBe(false);
     expect(computer.publicBoard[20].hasShip).toBe(false);
+  });
+});
+
+describe('player factory', () => {
+  let human;
+  let computer;
+  beforeEach(() => {
+    human = playerFactory('human');
+    computer = playerFactory('computer');
+  });
+  it('inherits gameboard', () => {
+    expect(human.publicBoard.length).toBe(100);
+    expect(computer.publicBoard.length).toBe(100);
+  });
+  it('deletes ship from dockyard and adds to fleet after placeShip', () => {
+    human.handlePlacement(human.dockYard.carrier, 10);
+    human.handlePlacement(human.dockYard.carrier, 20);
+    console.log(Object.keys(human.dockYard));
+    console.log(human.fleet);
+    expect(human.fleet.length).toBe(1);
+    expect(Object.keys(human.dockYard).length).toBe(4);
   });
 });
