@@ -34,9 +34,15 @@ const gameboardFactory = () => {
   const checkEdge = (ship, loc) => {
     let counter = 0;
     if (horizontal) {
-      let section = board.slice(loc, loc + ship.length);
+      let sectionArr = [];
       for (let i = 0; i < ship.length; i++) {
-        if (edges.includes(section[i].id)) {
+        if (loc + i > 99) {
+          counter++;
+          return (legalEdges = false);
+        } else {
+          sectionArr.push(loc + i);
+        }
+        if (edges.includes(sectionArr[i])) {
           counter++;
         }
       }
@@ -44,7 +50,12 @@ const gameboardFactory = () => {
     if (!horizontal) {
       let sectionArr = [];
       for (let i = 0; i < ship.length; i++) {
-        sectionArr.push(loc + i * 10);
+        if (loc + i * 10 > 99) {
+          counter++;
+          return (legalEdges = false);
+        } else {
+          sectionArr.push(loc + i * 10);
+        }
       }
       for (let i = 0; i < sectionArr.length; i++) {
         if (sectionArr[i] >= 99) {
@@ -61,21 +72,26 @@ const gameboardFactory = () => {
 
   const placeShip = (ship, loc) => {
     checkEdge(ship, loc);
-    if (legalEdges && horizontal && loc + ship.length <= 99) {
+    if (legalEdges && horizontal && loc + ship.length < 99) {
       let section = board.slice(loc, loc + ship.length);
       let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
       if (checkOpenSpaces) {
         section.forEach((spot) => (board[spot.id].hasShip = true));
-      } else return;
+      }
     }
-    if (legalEdges && !horizontal) {
+    if (
+      legalEdges &&
+      !horizontal &&
+      loc + ship.length < 99 &&
+      loc + ship.length * 10 < 99
+    ) {
       let section = [];
       let sectionArr = [];
       for (let i = 0; i < ship.length; i++) {
         sectionArr.push(loc + i * 10);
       }
       sectionArr.forEach((num) => section.push(board[num]));
-      let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
+      let checkOpenSpaces = section.every((spot) => !spot.hasShip);
       if (checkOpenSpaces) {
         section.forEach((spot) => (board[spot.id].hasShip = true));
       }

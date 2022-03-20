@@ -96,9 +96,18 @@ describe('player factory', () => {
   it('deletes ship from dockyard and adds to fleet after placeShip', () => {
     human.handlePlacement(human.dockYard.carrier, 10);
     human.handlePlacement(human.dockYard.carrier, 20);
-    console.log(Object.keys(human.dockYard));
-    console.log(human.fleet);
+
     expect(human.fleet.length).toBe(1);
     expect(Object.keys(human.dockYard).length).toBe(4);
+  });
+  it('places all boats for the computer randomly and legally', () => {
+    computer.toggleComputer();
+    computer.handleComputerPlacement();
+    console.log(computer.publicBoard);
+    console.log(computer.fleet);
+
+    // console.log(Object.keys(computer.dockYard).length);
+    expect(Object.keys(computer.dockYard).length).toBe(0);
+    expect(computer.fleet.length).toBe(5);
   });
 });
