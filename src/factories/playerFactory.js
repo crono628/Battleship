@@ -34,11 +34,23 @@ const playerFactory = (name) => {
           if (randomComputerAxis) {
             prototype.toggleHorizontal();
           }
-          handlePlacement(dockYard[boat], randomNum);
+          if (
+            prototype.checkShipPlacement(dockYard[boat], randomNum) &&
+            prototype.checkEdge(dockYard[boat], randomNum)
+          ) {
+            handlePlacement(dockYard[boat], randomNum);
+          }
         }
       }
     }
+    if (fleet.length === 5) {
+      return;
+    } else {
+      handleComputerPlacement();
+    }
   };
+
+  const attack = (someone, somewhere) => {};
 
   return Object.assign({}, prototype, {
     name,

@@ -38,7 +38,6 @@ const gameboardFactory = () => {
       for (let i = 0; i < ship.length; i++) {
         if (loc + i > 99) {
           counter++;
-          return (legalEdges = false);
         } else {
           sectionArr.push(loc + i);
         }
@@ -52,7 +51,6 @@ const gameboardFactory = () => {
       for (let i = 0; i < ship.length; i++) {
         if (loc + i * 10 > 99) {
           counter++;
-          return (legalEdges = false);
         } else {
           sectionArr.push(loc + i * 10);
         }
@@ -70,35 +68,42 @@ const gameboardFactory = () => {
     }
   };
 
-  const placeShip = (ship, loc) => {
+  const checkShipPlacement = (ship, loc) => {
     checkEdge(ship, loc);
-    if (legalEdges && horizontal && loc + ship.length < 99) {
-      let section = board.slice(loc, loc + ship.length);
-      let checkOpenSpaces = section.every((spot) => spot.hasShip === false);
-      if (checkOpenSpaces) {
-        section.forEach((spot) => (board[spot.id].hasShip = true));
-      }
-    }
-    if (
-      legalEdges &&
-      !horizontal &&
-      loc + ship.length < 99 &&
-      loc + ship.length * 10 < 99
-    ) {
-      let section = [];
+    if (legalEdges) {
       let sectionArr = [];
       for (let i = 0; i < ship.length; i++) {
-        sectionArr.push(loc + i * 10);
+        sectionArr.push(horizontal ? board[loc + i] : board[loc + i * 10]);
       }
-      sectionArr.forEach((num) => section.push(board[num]));
-      let checkOpenSpaces = section.every((spot) => !spot.hasShip);
-      if (checkOpenSpaces) {
-        section.forEach((spot) => (board[spot.id].hasShip = true));
+      if (ship.length === sectionArr.length) {
+        if (sectionArr.includes(undefined)) {
+          return false;
+        } else {
+          let checkOpenSpaces = sectionArr.every(
+            (spot) => spot.hasShip === false
+          );
+          return checkOpenSpaces;
+        }
       }
+    } else return false;
+  };
+
+  const placeShip = (ship, loc) => {
+    checkEdge(ship, loc);
+    if (legalEdges && checkShipPlacement(ship, loc)) {
+      let sectionArr = [];
+      for (let i = 0; i < ship.length; i++) {
+        sectionArr.push(horizontal ? board[loc + i] : board[loc + i * 10]);
+      }
+      sectionArr.forEach((spot) => (board[spot.id].hasShip = true));
     }
   };
 
-  const attack = (someone, somewhere) => {};
+  const checkWin = () => {
+    let checkShotBoats = board.filter((spot) => spot.hasShip && spot.shotTaken);
+    let checkBoat = board.filter((spot) => spot.hasShip);
+    return checkBoat.length === checkShotBoats.length ? true : false;
+  };
 
   return Object.assign({}, prototype, {
     publicBoard,
@@ -106,6 +111,8 @@ const gameboardFactory = () => {
     checkEdge,
     placeShip,
     toggleHorizontal,
+    checkShipPlacement,
+    checkWin,
   });
 };
 

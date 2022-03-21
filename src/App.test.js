@@ -80,6 +80,23 @@ describe('gameboard factory', () => {
     expect(human.publicBoard[50].hasShip).toBe(false);
     expect(computer.publicBoard[20].hasShip).toBe(false);
   });
+  it('shows all ships sunk if all are hit', () => {
+    human.placeShip(ships.destroyer, 0);
+    human.receiveAttack(0);
+    human.receiveAttack(1);
+    human.receiveAttack(2);
+    human.receiveAttack(3);
+    expect(human.checkWin()).toBe(true);
+  });
+  it('shows all ships are not sunk if all are not hit', () => {
+    human.placeShip(ships.carrier, 0);
+    human.receiveAttack(0);
+    human.receiveAttack(1);
+    human.receiveAttack(10);
+    human.receiveAttack(15);
+    human.receiveAttack(20);
+    expect(human.checkWin()).toBe(false);
+  });
 });
 
 describe('player factory', () => {
