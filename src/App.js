@@ -1,8 +1,13 @@
 import React from 'react';
-import shipFactory from './factories/shipFactory';
+import Gameboard from './components/Gameboard';
+import './styles.css';
 
 const App = () => {
-  return <div>toot</div>;
+  return (
+    <div className="container">
+      <Gameboard />
+    </div>
+  );
 };
 
 export default App;

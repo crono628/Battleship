@@ -8,27 +8,40 @@ import gameboardFactory from './factories/gameboardFactory';
 import playerFactory from './factories/playerFactory';
 import { ships } from './factories/ships';
 
-describe('ship factory', () => {
-  let threes;
-  let twos;
+describe('player factory', () => {
+  let human;
+  let computer;
   beforeEach(() => {
-    threes = shipFactory(3, [0, 10, 20]);
-    twos = shipFactory(2, [42, 43]);
+    human = playerFactory('human');
+    computer = playerFactory('computer');
   });
-  it("takes some hits and doesn't sink", () => {
-    threes.hit(10);
-    threes.hit(20);
-    expect(threes.publicHealth).toEqual([null, 'x', 'x']);
-    expect(threes.sunk()).toBe(false);
+  it('inherits gameboard', () => {
+    expect(human.publicBoard.length).toBe(100);
+    expect(computer.publicBoard.length).toBe(100);
   });
-  it('takes enough hits and sinks', () => {
-    threes.hit(0);
-    threes.hit(10);
-    threes.hit(20);
-    twos.hit(42);
-    twos.hit(43);
-    expect(threes.sunk()).toBe(true);
-    expect(twos.sunk()).toBe(true);
+  it('deletes ship from dockyard and adds to fleet after placeShip', () => {
+    human.handlePlacement(human.dockYard.carrier, 10);
+    human.handlePlacement(human.dockYard.carrier, 20);
+    expect(human.fleet.length).toBe(1);
+    expect(Object.keys(human.dockYard).length).toBe(4);
+  });
+  it('places all boats for the computer randomly and legally', () => {
+    computer.toggleComputer();
+    computer.handleComputerPlacement();
+    let boardHasShip = computer.publicBoard.filter((spot) => spot.hasShip);
+    expect(Object.keys(computer.dockYard).length).toBe(0);
+    expect(computer.fleet.length).toBe(5);
+    expect(boardHasShip.length).toBe(17);
+  });
+  it('attacks', () => {
+    human.attack(computer, 10);
+    human.attack(computer, 80);
+    human.attack(computer, 22);
+    console.log(computer.board.filter((item) => item.shotTaken));
+    console.log(computer.publicBoard.filter((item) => item.shotTaken));
+    expect(computer.publicBoard.filter((item) => item.shotTaken).length).toBe(
+      3
+    );
   });
 });
 
@@ -99,30 +112,26 @@ describe('gameboard factory', () => {
   });
 });
 
-describe('player factory', () => {
-  let human;
-  let computer;
+describe('ship factory', () => {
+  let threes;
+  let twos;
   beforeEach(() => {
-    human = playerFactory('human');
-    computer = playerFactory('computer');
+    threes = shipFactory(3, [0, 10, 20]);
+    twos = shipFactory(2, [42, 43]);
   });
-  it('inherits gameboard', () => {
-    expect(human.publicBoard.length).toBe(100);
-    expect(computer.publicBoard.length).toBe(100);
+  it("takes some hits and doesn't sink", () => {
+    threes.hit(10);
+    threes.hit(20);
+    expect(threes.publicHealth).toEqual([null, 'x', 'x']);
+    expect(threes.sunk()).toBe(false);
   });
-  it('deletes ship from dockyard and adds to fleet after placeShip', () => {
-    human.handlePlacement(human.dockYard.carrier, 10);
-    human.handlePlacement(human.dockYard.carrier, 20);
-
-    expect(human.fleet.length).toBe(1);
-    expect(Object.keys(human.dockYard).length).toBe(4);
-  });
-  it('places all boats for the computer randomly and legally', () => {
-    computer.toggleComputer();
-    computer.handleComputerPlacement();
-    let boardHasShip = computer.publicBoard.filter((spot) => spot.hasShip);
-    expect(Object.keys(computer.dockYard).length).toBe(0);
-    expect(computer.fleet.length).toBe(5);
-    expect(boardHasShip.length).toBe(17);
+  it('takes enough hits and sinks', () => {
+    threes.hit(0);
+    threes.hit(10);
+    threes.hit(20);
+    twos.hit(42);
+    twos.hit(43);
+    expect(threes.sunk()).toBe(true);
+    expect(twos.sunk()).toBe(true);
   });
 });

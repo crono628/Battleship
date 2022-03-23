@@ -9,13 +9,16 @@ const gameboardFactory = () => {
   const board = [];
   let publicBoard;
   const fleet = [];
+  let legalEdges = true;
+  let horizontal = true;
+
   (function createBoard() {
     if (board.length < 100) {
       for (let i = 0; i < 100; i++) {
         board.push({ hasShip: false, shotTaken: false, id: i });
       }
     }
-    publicBoard = board.slice();
+    publicBoard = [...board];
   })();
 
   const receiveAttack = (loc) => {
@@ -26,10 +29,8 @@ const gameboardFactory = () => {
     }
   };
 
-  let legalEdges = true;
-  let horizontal = true;
-
   const toggleHorizontal = () => (horizontal = !horizontal);
+  const getDirection = () => horizontal;
 
   const checkEdge = (ship, loc) => {
     let counter = 0;
@@ -104,7 +105,6 @@ const gameboardFactory = () => {
     let checkBoat = board.filter((spot) => spot.hasShip);
     return checkBoat.length === checkShotBoats.length ? true : false;
   };
-
   return Object.assign({}, prototype, {
     publicBoard,
     receiveAttack,
@@ -113,6 +113,8 @@ const gameboardFactory = () => {
     toggleHorizontal,
     checkShipPlacement,
     checkWin,
+    getDirection,
+    board,
   });
 };
 
