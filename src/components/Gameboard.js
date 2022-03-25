@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Cell from "./Cell";
-import playerFactory from "../factories/playerFactory";
+import React, { useState, useEffect } from 'react';
+import Cell from './Cell';
+import playerFactory from '../factories/playerFactory';
+import { ships } from '../factories/ships';
 
-let playerOne = playerFactory("person");
-let playerTwo = playerFactory("computer");
+let playerOne = playerFactory('person');
+let playerTwo = playerFactory('computer');
 
 const Gameboard = () => {
   const [playerOneData, setPlayerOneData] = useState(playerOne.publicBoard);
@@ -19,17 +20,26 @@ const Gameboard = () => {
     }
   };
 
+  const handleReset = () => {
+    let newArr = playerOne.publicBoard.map((item) => {
+      return { ...item, hasShip: false, shotTaken: false };
+    });
+    setPlayerOneData(newArr);
+    setPlayerTwoData(newArr);
+    setGameOver(false);
+  };
+
   const handleClick = (e) => {
-    if (e.target.classList.contains("player-one")) {
+    if (e.target.classList.contains('player-one')) {
       let copy = playerOneData.slice();
       let loc = copy[e.target.id];
 
       if (loc.shotTaken) {
         setPlayerOneData(copy);
       } else if (!loc.shotTaken && loc.hasShip) {
-        e.target.style.backgroundColor = "crimson";
+        e.target.style.backgroundColor = 'crimson';
       } else {
-        e.target.style.backgroundColor = "blue";
+        e.target.style.backgroundColor = 'blue';
       }
       copy[e.target.id].shotTaken = true;
       setPlayerOneData(copy);
@@ -39,18 +49,17 @@ const Gameboard = () => {
       ) {
         handleWin();
       }
-      // console.log(playerOneData.filter((item) => item.shotTaken));
     }
-    if (e.target.classList.contains("player-two")) {
+    if (e.target.classList.contains('player-two')) {
       let copy = playerTwoData.slice();
       let loc = copy[e.target.id];
 
       if (loc.shotTaken) {
         setPlayerOneData(copy);
       } else if (!loc.shotTaken && loc.hasShip) {
-        e.target.style.backgroundColor = "crimson";
+        e.target.style.backgroundColor = 'crimson';
       } else {
-        e.target.style.backgroundColor = "blue";
+        e.target.style.backgroundColor = 'blue';
       }
       copy[e.target.id].shotTaken = true;
       setPlayerTwoData(copy);
@@ -66,18 +75,24 @@ const Gameboard = () => {
   function handleDisplayShips() {
     for (const ship of playerTwoData) {
       if (ship.hasShip && !ship.shotTaken) {
-        // console.log(ship);
-        let list = document.querySelectorAll(".player-two");
-        list[ship.id].style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+        let list = document.querySelectorAll('.player-two');
+        list[ship.id].style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
       }
     }
   }
 
-  playerTwo.handleComputerPlacement();
+  const putShips = () => {
+    playerTwo.dockYard = { ...ships };
+    playerTwo.fleet = [];
+    playerTwo.handleComputerPlacement();
+    handleDisplayShips();
+    console.log(playerTwo.dockYard);
+    console.log(playerTwo.fleet);
+  };
 
   let playerTwoBoard = playerTwo.publicBoard.map((item, index) => (
     <Cell
-      className={"cell player-two"}
+      className={'cell player-two'}
       id={`${item.id}`}
       key={index}
       onClick={handleClick}
@@ -86,16 +101,21 @@ const Gameboard = () => {
 
   let playerOneBoard = playerOne.publicBoard.map((item, index) => (
     <Cell
-      className={"cell player-one"}
+      className={'cell player-one'}
       id={item.id}
       key={index}
       onClick={handleClick}
     />
   ));
   return gameOver ? (
-    <div>game over</div>
+    <div>
+      <div>game over</div>
+      <button onClick={handleReset}>reset</button>
+    </div>
   ) : (
     <div className="gameboard">
+      <button onClick={putShips}>put ships</button>
+
       <div className="gameboard">{playerOneBoard}</div>
       <div className="gameboard">{playerTwoBoard}</div>
     </div>

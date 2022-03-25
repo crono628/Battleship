@@ -35,23 +35,25 @@ const playerFactory = (name) => {
   const togglePlayerOne = () => (playerOneTurn = !playerOneTurn);
   const toggleComputer = () => (computer = !computer);
   const handleComputerPlacement = () => {
-    while (fleet.length < 5) {
-      for (const boat in dockYard) {
-        let randomNum = Math.floor(Math.random() * 99);
-        let randomComputerAxis = Math.random() < 0.5;
-        if (randomComputerAxis) {
-          prototype.toggleHorizontal();
-        }
-        if (
-          prototype.checkShipPlacement(dockYard[boat], randomNum) &&
-          prototype.checkEdge(dockYard[boat], randomNum)
-        ) {
-          handlePlacement(dockYard[boat], randomNum);
+    if (fleet.length === 0) {
+      while (fleet.length < 5) {
+        console.log('computer placement');
+        for (const boat in dockYard) {
+          let randomNum = Math.floor(Math.random() * 99);
+          let randomComputerAxis = Math.random() < 0.5;
+          if (randomComputerAxis) {
+            prototype.toggleHorizontal();
+          }
+          if (
+            prototype.checkShipPlacement(dockYard[boat], randomNum) &&
+            prototype.checkEdge(dockYard[boat], randomNum)
+          ) {
+            handlePlacement(dockYard[boat], randomNum);
+          }
         }
       }
-    }
-
-    if (fleet.length === 5) {
+    } else if (fleet.length === 5) {
+      console.log('done');
       return;
     } else {
       handleComputerPlacement();
